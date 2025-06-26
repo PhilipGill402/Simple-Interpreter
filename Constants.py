@@ -1,0 +1,7 @@
+INTEGER = 'INTEGER'
+PLUS = 'PLUS'
+MINUS = 'MINUS'
+TIMES = 'TIMES'
+DIVIDE = 'DIVIDE'
+EOF = 'EOF'
+OPERATORS = ['+', '-', '*', '\\']
