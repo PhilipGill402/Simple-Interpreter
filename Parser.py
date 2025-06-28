@@ -20,9 +20,58 @@ class Parser(object):
             self.error()
 
     def program(self):
-        node = self.compoundStatement() 
+        self.eat(PROGRAM)
+        varNode = self.variable()
+        programName = varNode.value
+        self.eat(SEMI)
+        blockNode = self.block()
         self.eat(DOT)
+        programNode = Program(programName, blockNode)
+        
+        return programNode  
 
+    def block(self):
+        declarationNodes = self.declarations()
+        compoundStatementNodes = self.compoundStatement() 
+        node = Block(declarationNodes, compoundStatementNodes)
+
+        return node
+
+    def declarations(self):
+        declarations = []
+        if self.currentToken.type == VAR:
+            self.eat(VAR)
+            while self.currentToken.type == ID:
+                varDecl = self.variableDeclaration()
+                declarations.extend(varDecl)
+                self.eat(SEMI)
+
+        return declarations 
+
+    def variableDeclaration(self):
+        varNodes = [Var(self.currentToken)]
+        self.eat(ID)
+
+        while self.currentToken == COMMA:
+            self.eat(COMMA)
+            varNodes.append(Var(self.currentToken))
+            self.eat(ID)
+
+        self.eat(COLON)
+
+        typeNode = self.typeSpec()
+        varDeclarations = [VarDecl(varNode, typeNode) for varNode in varNodes]
+
+        return varDeclarations 
+
+    def typeSpec(self):
+        token = self.currentToken 
+        if self.currentToken.type == INTEGER:
+            self.eat(INTEGER)
+        elif self.currentToken.type == REAL:
+            self.eat(REAL)
+        node = Type(token)
+        
         return node
 
     def compoundStatement(self):
@@ -80,26 +129,30 @@ class Parser(object):
     def factor(self):
         token = self.currentToken
 
-        if token.type == INTEGER:
-            self.eat(INTEGER)
-            
-            return Num(token) 
+        if token.type == INTEGER_CONST:
+            self.eat(INTEGER_CONST)
+            return Num(token)
+        
+        elif token.type == REAL_CONST:
+            self.eat(REAL_CONST)
+            return Num(token)
+        
         elif token.type == LPAREN:
             self.eat(LPAREN)
             node = self.expr()
             self.eat(RPAREN)
-            
             return node 
+
         elif token.type == PLUS:
                 self.eat(PLUS)
                 node = UnaryOp(token, self.factor())
-
                 return node 
+        
         elif token.type == MINUS:
                 self.eat(MINUS)
                 node = UnaryOp(token, self.factor())
-
                 return node 
+
         else:
             node = self.variable()
             return node

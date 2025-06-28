@@ -48,6 +48,20 @@ class Interpreter(NodeVisitor):
             raise NameError(repr(varName))
         else:
             return value 
+    
+    def visitProgram(self, node):
+        self.visit(node.block)
+    
+    def visitBlock(self, node):
+        for declaration in node.declarations:
+            self.visit(declaration)
+        self.visit(node.compoundStatement)
+
+    def visitVarDecl(self, node):
+        pass
+
+    def visitType(self, node):
+        pass
 
     def visitNoOp(self, node: NoOp):
         pass

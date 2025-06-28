@@ -58,9 +58,19 @@ class Lexer(object):
                 num = "" 
                 while self.c.isdigit():
                     num += self.c
-                    self.advance() 
+                    self.advance()
+                
+                if self.c == '.':
+                    num += self.c
+                    self.advance()
+                
+                    while self.c.isdigit() and self.c is not None:
+                        num += self.c
+                        self.advance()
                     
-                return Token(INTEGER, int(num))
+                    return Token(REAL_CONST, float(num))
+                    
+                return Token(INTEGER_CONST, int(num))
 
             elif self.c == '+':
                 self.advance() 
@@ -103,5 +113,13 @@ class Lexer(object):
             elif self.c == '.':
                 self.advance() 
                 return Token(DOT, '.')
+            
+            elif self.c == ':':
+                self.advance()
+                return Token(COLON, ':')
+            
+            elif self.c == ',':
+                self.advance()
+                return Token(COMMA, ',')
 
         return Token(EOF, 'NONE')

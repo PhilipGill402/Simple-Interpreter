@@ -39,5 +39,25 @@ class Var(AST):
         self.token = token
         self.value = token.value
 
+class Program(AST):
+    def __init__(self, name, block):
+        self.name = name
+        self.block = block
+
+class Block(AST):
+    def __init__(self, declarations, compoundStatement):
+        self.declarations = declarations
+        self.compoundStatement = compoundStatement
+
+class VarDecl(AST):
+    def __init__(self, varNode, typeNode):
+        self.varNode = varNode
+        self.typeNode = typeNode
+
+class Type(AST):
+    def __init__(self, token):
+        self.token = token
+        self.value = token.value
+
 class NoOp(AST):
     pass
