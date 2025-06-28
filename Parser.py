@@ -52,7 +52,7 @@ class Parser(object):
         varNodes = [Var(self.currentToken)]
         self.eat(ID)
 
-        while self.currentToken == COMMA:
+        while self.currentToken.type == COMMA:
             self.eat(COMMA)
             varNodes.append(Var(self.currentToken))
             self.eat(ID)
