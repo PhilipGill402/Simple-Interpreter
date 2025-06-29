@@ -2,7 +2,6 @@ from Token import *
 from Constants import *
 from Lexer import *
 from AST import *
-from Interpreter import *
 from collections import deque
 
 class Parser(object):

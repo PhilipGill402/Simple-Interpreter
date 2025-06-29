@@ -1,4 +1,5 @@
 from Parser import *
+from Interpreter import *
 
 num = 0
 
