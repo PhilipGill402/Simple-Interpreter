@@ -14,7 +14,8 @@ class Lexer(object):
                                     'program': Token(PROGRAM, 'program'),
                                     'var': Token(VAR, 'var'),
                                     'integer': Token(INTEGER, 'integer'),
-                                    'real': Token(REAL, 'real')
+                                    'real': Token(REAL, 'real'),
+                                    'procedure': Token(PROCEDURE, 'procedure')
                                 }
 
 
@@ -56,25 +57,31 @@ class Lexer(object):
                     self.advance() 
                 self.advance() 
 
-            if self.c.isdigit():
-                num = "" 
-                while self.c.isdigit():
-                    num += self.c
-                    self.advance()
-                
-                if self.c == '.':
-                    num += self.c
-                    self.advance()
-                
-                    while self.c.isdigit() and self.c is not None:
+            if self.c is not None:
+                if self.c.isdigit():
+                    num = "" 
+                    while self.c.isdigit():
                         num += self.c
                         self.advance()
                     
-                    return Token(REAL_CONST, float(num))
+                    if self.c == '.':
+                        num += self.c
+                        self.advance()
                     
-                return Token(INTEGER_CONST, int(num))
+                        while self.c.isdigit() and self.c is not None:
+                            num += self.c
+                            self.advance()
+                        
+                        return Token(REAL_CONST, float(num))
+                        
+                    return Token(INTEGER_CONST, int(num))
 
-            elif self.c == '+':
+                elif self.c.isalpha() or self.c == '_':
+                    token = self._id()
+                    token.value = token.value.lower()
+                    return token
+            
+            if self.c == '+':
                 self.advance() 
                 return Token(PLUS, self.c)
 
@@ -98,11 +105,6 @@ class Lexer(object):
                 self.advance() 
                 return Token(RPAREN, self.c)
             
-            elif self.c.isalpha() or self.c == '_':
-                token = self._id()
-                token.value = token.value.lower()
-
-                return token 
             elif self.c == ':' and self.peek() == '=':
                 self.advance()
                 self.advance() 

@@ -58,6 +58,9 @@ class Interpreter(NodeVisitor):
             self.visit(declaration)
         self.visit(node.compoundStatement)
 
+    def visitProcedureDecl(self, node: ProcedureDecl) -> None:
+        pass
+
     def visitVarDecl(self, node: VarDecl) -> None:
         pass
 

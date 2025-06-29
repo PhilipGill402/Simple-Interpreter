@@ -60,5 +60,10 @@ class Type(AST):
         self.token = token
         self.value = token.value
 
+class ProcedureDecl(AST):
+    def __init__(self, procName: str, blockNode: Block):
+        self.procName = procName
+        self.blockNode = blockNode
+
 class NoOp(AST):
     pass

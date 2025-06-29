@@ -36,7 +36,7 @@ class Parser(object):
 
         return node
 
-    def declarations(self) -> list[Var]:
+    def declarations(self):
         declarations = []
         if self.currentToken.type == VAR:
             self.eat(VAR)
@@ -45,6 +45,16 @@ class Parser(object):
                 declarations.extend(varDecl)
                 self.eat(SEMI)
 
+        while self.currentToken.type == PROCEDURE:
+            self.eat(PROCEDURE)
+            procName = self.currentToken.value
+            self.eat(ID)
+            self.eat(SEMI)
+            blockNode = self.block()
+            procDecl = ProcedureDecl(procName, blockNode)
+            declarations.append(procDecl)
+            self.eat(SEMI)
+        
         return declarations 
 
     def variableDeclaration(self) -> list[VarDecl]:

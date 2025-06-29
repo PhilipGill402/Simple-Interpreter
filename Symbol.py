@@ -70,7 +70,9 @@ class SymbolTableBuilder(NodeVisitor):
         varSymbol = self.symtab.lookup(varName)
         if varSymbol is None:
             raise(NameError(str(varName)))
-
+        
+    def visitProcedureDecl(self, node: ProcedureDecl) -> None:
+        pass
 
 class Symbol(object):
     def __init__(self, name: str, type=None) -> None:
