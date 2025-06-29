@@ -1,8 +1,9 @@
+from typing import Union
 from Token import *
 from Constants import *
 
 class Lexer(object):
-    def __init__(self, text):
+    def __init__(self, text: str) -> None:
         self.text = text
         self.pos = 0
         self.c = self.text[self.pos] 
@@ -17,7 +18,7 @@ class Lexer(object):
                                 }
 
 
-    def _id(self):
+    def _id(self) -> Token:
         result = ''
         while self.c is not None and (self.c.isalnum() or self.c == '_'):
             result += self.c.lower()
@@ -25,15 +26,16 @@ class Lexer(object):
 
         token = self.RESERVED_KEYWORDS.get(result, Token(ID, result))
         return token 
-    def error(self):
+
+    def error(self) -> None:
         raise Exception("Error parsing input")
     
-    def peek(self):
+    def peek(self) -> Union[None, str]:
         if self.pos+1 >= len(self.text):
             return None
         return self.text[self.pos+1]
     
-    def advance(self):
+    def advance(self) -> None:
         self.pos += 1
         if self.pos >= len(self.text):
             self.c = None 
@@ -41,7 +43,7 @@ class Lexer(object):
             self.c = self.text[self.pos]
 
     
-    def getNextToken(self):
+    def getNextToken(self) -> Token:
         while self.c != None:
             #skips whitespace
             if self.c.isspace():

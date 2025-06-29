@@ -49,18 +49,18 @@ class Interpreter(NodeVisitor):
         else:
             return value 
     
-    def visitProgram(self, node):
+    def visitProgram(self, node: Program):
         self.visit(node.block)
     
-    def visitBlock(self, node):
+    def visitBlock(self, node: Block):
         for declaration in node.declarations:
             self.visit(declaration)
         self.visit(node.compoundStatement)
 
-    def visitVarDecl(self, node):
+    def visitVarDecl(self, node: VarDecl):
         pass
 
-    def visitType(self, node):
+    def visitType(self, node: Type):
         pass
 
     def visitNoOp(self, node: NoOp):

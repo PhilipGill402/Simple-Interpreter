@@ -6,20 +6,20 @@ from Interpreter import *
 from collections import deque
 
 class Parser(object):
-    def __init__(self, lexer: Lexer):
+    def __init__(self, lexer: Lexer) -> None:
         self.lexer = lexer 
         self.currentToken = self.lexer.getNextToken() 
     
-    def error(self):
+    def error(self) -> None:
         raise Exception("Error parsing input")
 
-    def eat(self, tokenType):
+    def eat(self, tokenType: str) -> None:
         if self.currentToken.type == tokenType:
             self.currentToken = self.lexer.getNextToken()
         else:
             self.error()
 
-    def program(self):
+    def program(self) -> Program:
         self.eat(PROGRAM)
         varNode = self.variable()
         programName = varNode.value
@@ -30,14 +30,14 @@ class Parser(object):
         
         return programNode  
 
-    def block(self):
+    def block(self) -> Block:
         declarationNodes = self.declarations()
         compoundStatementNodes = self.compoundStatement() 
         node = Block(declarationNodes, compoundStatementNodes)
 
         return node
 
-    def declarations(self):
+    def declarations(self) -> list[Var]:
         declarations = []
         if self.currentToken.type == VAR:
             self.eat(VAR)
@@ -48,7 +48,7 @@ class Parser(object):
 
         return declarations 
 
-    def variableDeclaration(self):
+    def variableDeclaration(self) -> list[VarDecl]:
         varNodes = [Var(self.currentToken)]
         self.eat(ID)
 
@@ -64,7 +64,7 @@ class Parser(object):
 
         return varDeclarations 
 
-    def typeSpec(self):
+    def typeSpec(self) -> Type:
         token = self.currentToken 
         if self.currentToken.type == INTEGER:
             self.eat(INTEGER)
@@ -74,7 +74,7 @@ class Parser(object):
         
         return node
 
-    def compoundStatement(self):
+    def compoundStatement(self) -> Compound:
         self.eat(BEGIN)
         nodes = self.statementList()
         self.eat(END) 
@@ -85,7 +85,7 @@ class Parser(object):
 
         return root 
 
-    def statementList(self):
+    def statementList(self) -> list:
         node = self.statement()
         results = [node]
 
@@ -98,7 +98,7 @@ class Parser(object):
         
         return results
 
-    def statement(self):
+    def statement(self) -> Union[Compound, Assign, NoOp]:
         if self.currentToken.type == BEGIN:
             return self.compoundStatement() 
         elif self.currentToken.type == ID:
@@ -108,7 +108,7 @@ class Parser(object):
 
         return node
 
-    def assignmentStatement(self):
+    def assignmentStatement(self) -> Assign:
         left = self.variable()
         token = self.currentToken
         self.eat(ASSIGN)
@@ -117,16 +117,16 @@ class Parser(object):
 
         return node
 
-    def variable(self):
+    def variable(self) -> Var:
         node = Var(self.currentToken)
         self.eat(ID)
 
         return node 
 
-    def empty(self):
+    def empty(self) -> NoOp:
         return NoOp()
 
-    def factor(self):
+    def factor(self) -> Union[Num, UnaryOp, BinOp, Var]:
         token = self.currentToken
 
         if token.type == INTEGER_CONST:
@@ -157,7 +157,7 @@ class Parser(object):
             node = self.variable()
             return node
         
-    def expr(self):
+    def expr(self) -> Union[Num, UnaryOp, BinOp, Var]:
         node = self.term()
         
         while self.currentToken.type in [PLUS, MINUS]:
@@ -171,7 +171,7 @@ class Parser(object):
 
         return node 
     
-    def term(self):
+    def term(self) -> Union[Num, UnaryOp, BinOp, Var]:
         node = self.factor()
 
         while self.currentToken.type in [MUL, DIV, INTDIV]:
@@ -187,7 +187,7 @@ class Parser(object):
   
         return node
     
-    def parse(self):
+    def parse(self) -> Program:
         node = self.program()
         if self.currentToken.type != EOF:
             self.error()
