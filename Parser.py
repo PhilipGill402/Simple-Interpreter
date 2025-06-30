@@ -38,7 +38,7 @@ class Parser(object):
 
     def declarations(self):
         declarations = []
-        if self.currentToken.type == VAR:
+        while self.currentToken.type == VAR:
             self.eat(VAR)
             while self.currentToken.type == ID:
                 varDecl = self.variableDeclaration()

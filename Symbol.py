@@ -53,26 +53,26 @@ class SymbolTableBuilder(NodeVisitor):
 
     def visitVarDecl(self, node: VarDecl) -> None:
         typeSymbol = self.symtab.lookup(node.typeNode.value)
-        if typeSymbol is None:
-            raise NameError(f"Type '{node.typeNode.value}' not found in symbol table")
         varName = node.varNode.value
         varSymbol = VarSymbol(varName, typeSymbol)
+
+        if self.symtab.lookup(varName) is not None:
+            raise Exception(f"Error: Duplicate identifier '{varName}' found") 
         self.symtab.define(varSymbol) 
 
     def visitAssign(self, node: Assign) -> None:
-        varName = node.left.value
-        varSymbol = self.symtab.lookup(varName)
-        if varSymbol is None:
-            raise NameError(str(varName))
+        self.visit(node.right)
+        self.visit(node.left)
     
     def visitVar(self, node: Var) -> None:
         varName = node.value
         varSymbol = self.symtab.lookup(varName)
         if varSymbol is None:
-            raise(NameError(str(varName)))
-        
+            raise NameError(f"Error: Symbol(identifier) not found '{varName}'")
+
     def visitProcedureDecl(self, node: ProcedureDecl) -> None:
         pass
+
 
 class Symbol(object):
     def __init__(self, name: str, type=None) -> None:
@@ -95,14 +95,12 @@ class VarSymbol(Symbol):
     
 if __name__ == "__main__":
     text = """
-    Program Part11;
-    var
-        x : INTEGER;
-        y : REAL;
-    
-    begin
+    program Main;
+   var x  : integer;
 
-    end.
+begin
+    x := y;
+end.
 """ 
     lexer = Lexer(text)
     parser = Parser(lexer)

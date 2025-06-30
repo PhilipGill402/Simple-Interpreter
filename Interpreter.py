@@ -44,11 +44,7 @@ class Interpreter(NodeVisitor):
     def visitVar(self, node: Var) -> int:
         varName = node.value
         value = self.GLOBAL_SCOPE.get(varName)
-
-        if value is None:
-            raise NameError(repr(varName))
-        else:
-            return value 
+        return value 
     
     def visitProgram(self, node: Program) -> None:
         self.visit(node.block)
